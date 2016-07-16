@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>fonts</title>
+  </head>
+
+  <body>
+    <p><strong>WARNING. ONLY LOAD THIS PAGE ON WIFI. It will download like a gigabyte of fonts.</strong></p>
+    <p>This page is going through and analyzing all the fonts in <a href="fonts.json">fonts.json</a>. It'll take a couple minutes. At the end, it'll automatically download a file called <a href="analysis.json">analysis.json</a>.</p>
+    <p>If you haven't yet, generate `fonts.json` by downloading a pile of fonts into the <a href="in/">in</a> folder, then running `npm run import` to clean them up.</p>
+    <canvas id="canvas" width="100" height="100"></canvas>
+    <div id="log"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/opentype.js/0.6.3/opentype.js"></script>
+    <script src="fonts.js"></script>
+    <script src="index.js"></script>
+  </body>
+</html>
