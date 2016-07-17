@@ -24,7 +24,7 @@ const showDistance = (distance) => {
   return ''
 }
 
-const showDistances = (font) => {
+window.showDistances = (font) => {
   const html = Object.keys(font.distances)
     .map((otherFontName) => {
       return {
