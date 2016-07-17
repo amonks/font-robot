@@ -23,8 +23,9 @@ export default (opts) => {
   }
 
   const getCoords = (i, w) => {
-    const x = i % w
-    const y = Math.floor(i / w)
+    const pixel = Math.floor(i / 4)
+    const x = pixel % w
+    const y = Math.floor(pixel / w)
     return {x, y}
   }
 
@@ -37,7 +38,7 @@ export default (opts) => {
     const data = imgData.data
     let firstRow, lastRow, firstColumn, lastColumn
     let area = 0
-    for (let i in data) {
+    for (let i = 3; i < canvas.width * canvas.height * 4; i += 4) {
       const coords = getCoords(i, canvas.width)
       const value = data[i]
       if (value > 0) {
@@ -71,6 +72,7 @@ export default (opts) => {
     const A = measureString(ctx, font, 'A')
     const x = measureString(ctx, font, 'x')
     const O = measureString(ctx, font, 'O')
+    const o = measureString(ctx, font, 'o')
     const M = measureString(ctx, font, 'M')
     const N = measureString(ctx, font, 'N')
     const l = measureString(ctx, font, 'l')
@@ -80,13 +82,15 @@ export default (opts) => {
 
     const xHeight = x.height / A.height
     const contrast = O.contrast
+    const ungeometism = u.mean([Math.abs(o.width - o.height), Math.abs(O.width - O.height)])
+    const sansitude = l.contrast
     const widthRatio = u.mean([M.width / M.height, N.width / N.height])
     const widthVariance = Math.abs(u.mean([l.width, i.width]) - u.mean([A.width, M.width, O.width]))
     const complexity = u.mean([A.complexity, s.complexity, i.complexity, g.complexity, O.complexity])
 
     return {
       name, fontUrl,
-      xHeight, contrast, widthRatio, widthVariance, complexity
+      xHeight, contrast, widthRatio, widthVariance, complexity, sansitude, ungeometism
     }
   }
 
@@ -113,14 +117,12 @@ export default (opts) => {
         if (!item) return false
         for (let key of keys) {
           const val = item[key]
-          console.log(val)
           if ((typeof val !== 'number') || (isNaN(val))) {
             return false
           }
         }
         return true
       })
-      console.log('filtered', filtered)
       resolve(filtered)
     })
   }
@@ -130,14 +132,12 @@ export default (opts) => {
     return new Promise((resolve, reject) => {
       const keys = u.numericKeys(analysis[0])
       let newAnalysis = analysis
-      console.log(keys[0])
       keys.map((key) => {
-        console.log('starting key', key)
-        console.log('newanalysis', newAnalysis)
         const vals = newAnalysis.map((font) => { return font[key] })
         const normer = u.makeNormalNormer(vals)
         newAnalysis = newAnalysis.map((font) => {
-          font[key] = normer(font[key])
+          const newVal = normer(font[key])
+          font[key] = newVal
           return font
         })
       })

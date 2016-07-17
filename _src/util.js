@@ -26,7 +26,7 @@ function util () {
       return diff * diff
     }).reduce((a, b) => {
       return a + b
-    }))
+    }, 0))
   }
 
   const firstN = (n, arr) => {

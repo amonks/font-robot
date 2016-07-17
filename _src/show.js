@@ -53,27 +53,31 @@ const fontFace = (font) => {
 }
 
 const fontRow = (font) => {
+  const keys = u.numericKeys(font)
+  const tds = keys
+    .map((key) => { return font[key] })
+    .map(wrap('td'))
+    .reduce(u.add)
   return `
     <tr>
       <td>${showFont(font)}</td>
-      <td>${font.xHeight}</td>
-      <td>${font.complexity}</td>
-      <td>${font.contrast}</td>
-      <td>${font.widthRatio}</td>
-      <td>${font.widthVariance}</td>
+      ${tds}
     </tr>`
 }
 
-const fontTable = (rows) => {
+const fontTable = (fonts) => {
+  const keys = u.numericKeys(fonts[0])
+  const ths = keys
+    .map((key) => { return `<th onclick="sort('${key}')">${key}</th>` })
+    .reduce(u.add)
+  const rows = fonts
+    .map(fontRow)
+    .reduce(u.add)
   return `
     <table>
       <tr>
         <th onclick="sort('font')">font</th>
-        <th onclick="sort('xHeight')">x height</th>
-        <th onclick="sort('complexity')">complexity</th>
-        <th onclick="sort('contrast')">contrast</th>
-        <th onclick="sort('widthRatio')">width ratio</th>
-        <th onclick="sort('widthVariance')">width variance</th>
+        ${ths}
       </tr>
       ${rows}
     </table>`
@@ -95,19 +99,16 @@ u.r('analysis.json')
 
     const by = (sortBy) => {
       return (a, b) => {
-        if (a[sortBy] < b[sortBy]) return -1
-        if (a[sortBy] > b[sortBy]) return 1
+        if (a[sortBy] < b[sortBy]) return 1
+        if (a[sortBy] > b[sortBy]) return -1
         return 0
       }
     }
 
     const sort = (sortBy) => {
       const table = fontTable(
-        fonts
-          .sort(by(sortBy))
-          .map(fontRow)
-          .reduce(u.add)
-        )
+        fonts.sort(by(sortBy))
+      )
       document.getElementById('show').innerHTML = table
     }
     sort('xHeight')
