@@ -1,6 +1,6 @@
 /* global fonts */
 
-import { r } from './util.js'
+import u from './util.js'
 import fonts from './fonts.js'
 
 // logging function
@@ -10,9 +10,9 @@ const log = (text) => {
 }
 
 var saveData = (function () {
-  var a = document.createElement('a')
+  let a = document.createElement('a')
+  a.style.display = 'none'
   document.body.appendChild(a)
-  a.style = 'display: none'
   return function (data, fileName) {
     const json = JSON.stringify(data)
     const blob = new window.Blob([json], {type: 'octet/stream'})
@@ -35,7 +35,7 @@ const analyst = fonts({
 
 const analyzeFonts = () => {
   return new Promise((resolve, reject) => {
-    r('fonts.json').then((urls) => {
+    u.r('fonts.json').then((urls) => {
       analyst.analyze(urls)
       .then((analysis) => {
         saveData(analysis, 'analysis.json')
