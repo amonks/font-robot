@@ -1,23 +1,4 @@
-// generic http request function
-const r = (url) => {
-  return new Promise((resolve, reject) => {
-    let req = new window.XMLHttpRequest()
-    req.onreadystatechange = () => {
-      if (req.readyState === 4 && req.status === 200) {
-        resolve(JSON.parse(req.responseText))
-      }
-    }
-    req.open('GET', url, true)
-    req.send()
-  })
-}
-
-const numericKeys = (obj) => {
-  return Object.keys(obj).filter((key) => {
-    if (typeof obj[key] === 'number') { return true }
-    return false
-  })
-}
+import u from './util.js'
 
 const add = (a, b) => {
   return a + b
@@ -34,10 +15,6 @@ const showFont = (font) => {
     <span onclick="showDistances(window.analysis['${font.name}'])" style="font-family: '${font.name}';" id="${font.name}">
       ${font.name} [ A O M N x l i ]
     </span>`
-}
-
-const ib = (el) => {
-  return `<span style="display: inline-block; width: 200px; height: 1.2em; overflow-x: hidden">${el}</span>`
 }
 
 const showDistance = (distance) => {
@@ -104,12 +81,12 @@ const fontTable = (rows) => {
     </table>`
 }
 
-r('analysis.json')
+u.r('analysis.json')
   .then((analysis) => {
     window.analysis = analysis
     const fonts = Object.keys(analysis)
       .map((key) => { return analysis[key] })
-    window.dataWhatevers = numericKeys(fonts[0])
+    window.dataWhatevers = u.numericKeys(fonts[0])
 
     const style = wrap('style')(
       fonts

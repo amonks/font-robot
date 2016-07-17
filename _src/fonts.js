@@ -1,20 +1,11 @@
 /* global opentype */
 
-window.fonts = (opts) => {
+import u from './util.js'
+
+export default (opts) => {
   const canvas = opts.canvas || {
     width: 100,
     height: 100
-  }
-
-  const mean = (arr) => {
-    return arr.reduce((a, b) => { return a + b }) / arr.length
-  }
-
-  const numericKeys = (obj) => {
-    return Object.keys(obj).filter((key) => {
-      if (typeof obj[key] === 'number') { return true }
-      return false
-    })
   }
 
   const clear = (ctx) => {
@@ -80,24 +71,13 @@ window.fonts = (opts) => {
 
     const xHeight = x.height / A.height
     const contrast = O.contrast
-    const widthRatio = mean([M.width / M.height, N.width / N.height])
-    const widthVariance = Math.abs(mean([l.width, i.width]) - mean([A.width, M.width, O.width]))
+    const widthRatio = u.mean([M.width / M.height, N.width / N.height])
+    const widthVariance = Math.abs(u.mean([l.width, i.width]) - u.mean([A.width, M.width, O.width]))
 
     return {
       name, fontUrl,
       xHeight, contrast, widthRatio, widthVariance
     }
-  }
-
-  const distance = (a, b) => {
-    const keys = numericKeys(a)
-    return Math.sqrt(keys.map((key) => {
-      return a[key] - b[key]
-    }).map((diff) => {
-      return diff * diff
-    }).reduce((a, b) => {
-      return a + b
-    }))
   }
 
   const examine = (fontUrl) => {
@@ -118,7 +98,7 @@ window.fonts = (opts) => {
   const filterNull = (analysis) => {
     opts.log('removing errored fonts')
     return new Promise((resolve, reject) => {
-      const keys = numericKeys(analysis[0])
+      const keys = u.numericKeys(analysis[0])
       const filtered = analysis.filter((item) => {
         if (!item) return false
         for (let key of keys) {
@@ -138,7 +118,7 @@ window.fonts = (opts) => {
   const normalize = (analysis) => {
     opts.log('normalizing values')
     return new Promise((resolve, reject) => {
-      const keys = numericKeys(analysis[0])
+      const keys = u.numericKeys(analysis[0])
       let newAnalysis = analysis
       console.log(keys[0])
       keys.map((key) => {
@@ -170,7 +150,7 @@ window.fonts = (opts) => {
         count += 1
         if (count % 50 === 0) { opts.log(`${count} out of ${analysis.length}`) }
         const distances = analysis.map((otherFont) => {
-          return { name: otherFont.name, distance: distance(font, otherFont) }
+          return { name: otherFont.name, distance: u.distance(font, otherFont) }
         }).reduce((a, b) => {
           a[b.name] = b.distance
           return a

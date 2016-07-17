@@ -1,9 +1,6 @@
 import phridge from 'phridge'
-const sites = require('./alexa-top-1m.json')
 
-const firstN = (n, arr) => {
-  return arr.splice(0, n)
-}
+const sites = require('./alexa-top-1m.json')
 
 const url = 'http://monks.co'
 phridge.spawn({

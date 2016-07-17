@@ -1,5 +1,8 @@
 /* global fonts */
 
+import { r } from './util.js'
+import fonts from './fonts.js'
+
 // logging function
 const log = (text) => {
   console.log('log', text)
@@ -29,20 +32,6 @@ const analyst = fonts({
   },
   log
 })
-
-// generic http request function
-const r = (url) => {
-  return new Promise((resolve, reject) => {
-    let req = new window.XMLHttpRequest()
-    req.onreadystatechange = () => {
-      if (req.readyState === 4 && req.status === 200) {
-        resolve(JSON.parse(req.responseText))
-      }
-    }
-    req.open('GET', url, true)
-    req.send()
-  })
-}
 
 const analyzeFonts = () => {
   return new Promise((resolve, reject) => {

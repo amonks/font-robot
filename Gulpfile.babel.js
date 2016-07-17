@@ -1,11 +1,15 @@
 import gulp from 'gulp'
 
-import babel from 'gulp-babel'
 import clean from 'gulp-clean'
 import filter from 'gulp-filter'
 import flatten from 'gulp-flatten'
 import list from 'gulp-filelist'
 import sequence from 'gulp-sequence'
+
+import babelify from 'babelify'
+import browserify from 'browserify'
+import source from 'vinyl-source-stream'
+import buffer from 'vinyl-buffer'
 
 gulp.task('clean', () => {
   return gulp.src('./in/**/*', {read: false})
@@ -27,13 +31,27 @@ gulp.task('list', () => {
 })
 
 gulp.task('js', () => {
-  return gulp.src('./_src/*.js')
-    .pipe(babel({
-      presets: ['es2015']
-    }))
-    .pipe(gulp.dest('./'))
+  return Promise.all([
+    browserify({
+      entries: './_src/analyze.js',
+      debug: true
+    })
+      .transform(babelify, {presets: ['es2015']})
+      .bundle()
+      .pipe(source('analyze.js'))
+      .pipe(buffer())
+      .pipe(gulp.dest('./js')),
+    browserify({
+      entries: './_src/show.js',
+      debug: true
+    })
+      .transform(babelify, {presets: ['es2015']})
+      .bundle()
+      .pipe(source('show.js'))
+      .pipe(buffer())
+      .pipe(gulp.dest('./js'))
+  ])
 })
-
 
 gulp.task('import', sequence('copy', 'list', 'clean'))
 
