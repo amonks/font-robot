@@ -135,14 +135,7 @@ export default (opts) => {
         console.log('starting key', key)
         console.log('newanalysis', newAnalysis)
         const vals = newAnalysis.map((font) => { return font[key] })
-        const min = Math.min(...vals)
-        const max = Math.max(...vals)
-        const range = max - min
-        console.log(vals, min, max, range)
-        const normer = (v) => {
-          console.log(v, min, range)
-          return (v - min) / range
-        }
+        const normer = u.makeNormalNormer(vals)
         newAnalysis = newAnalysis.map((font) => {
           font[key] = normer(font[key])
           return font

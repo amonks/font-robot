@@ -1,9 +1,5 @@
 import u from './util.js'
 
-const add = (a, b) => {
-  return a + b
-}
-
 const wrap = (el) => {
   return (html) => {
     return `<${el}>${html}</${el}>`
@@ -41,7 +37,7 @@ window.showDistances = (font) => {
     })
     .map(showDistance)
     .map(wrap('div'))
-    .reduce(add)
+    .reduce(u.add)
   document.getElementById('distances').innerHTML = `
     <p>most similar</p>
     ${html}
@@ -93,7 +89,7 @@ u.r('analysis.json')
     const style = wrap('style')(
       fonts
         .map(fontFace)
-        .reduce(add)
+        .reduce(u.add)
     )
     document.head.innerHTML += style
 
@@ -110,7 +106,7 @@ u.r('analysis.json')
         fonts
           .sort(by(sortBy))
           .map(fontRow)
-          .reduce(add)
+          .reduce(u.add)
         )
       document.getElementById('show').innerHTML = table
     }

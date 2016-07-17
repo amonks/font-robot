@@ -1,4 +1,12 @@
 function util () {
+  const add = (a, b) => {
+    return a + b
+  }
+
+  const concat = (a, b) => {
+    return a.concat(b)
+  }
+
   const mean = (arr) => {
     return arr.reduce((a, b) => { return a + b }) / arr.length
   }
@@ -25,6 +33,20 @@ function util () {
     return arr.splice(0, n)
   }
 
+  const makeNormer = (from, to, values) => {
+    const max = Math.max(...values)
+    const min = Math.min(...values)
+    const range = max - min
+    const newRange = to - from
+    return (value) => {
+      return ((value - min) / range) * newRange + from
+    }
+  }
+
+  const makeNormalNormer = (values) => {
+    return makeNormer(0, 100, values)
+  }
+
   // generic http request function
   const r = (url) => {
     return new Promise((resolve, reject) => {
@@ -40,7 +62,7 @@ function util () {
   }
 
   return Object.freeze({
-    mean, distance, firstN, r, numericKeys
+    mean, distance, firstN, r, numericKeys, add, concat, makeNormer, makeNormalNormer
   })
 }
 
