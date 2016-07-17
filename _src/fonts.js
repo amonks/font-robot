@@ -12,9 +12,14 @@ export default (opts) => {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
   }
 
-  const drawString = (ctx, font, str) => {
+  const getPath = (font, str) => {
+    return font.getPath(str, 15, 72)
+  }
+
+  const drawPath = (ctx, path) => {
     clear(ctx)
-    return font.draw(ctx, str, 0, 72)
+    path.draw(ctx)
+    return true
   }
 
   const getCoords = (i, w) => {
@@ -25,7 +30,8 @@ export default (opts) => {
 
   // return statistics about a string (like a character) in a font
   const measureString = (ctx, font, str) => {
-    drawString(ctx, font, str)
+    const path = getPath(font, str)
+    drawPath(ctx, path)
 
     const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height)
     const data = imgData.data
@@ -42,13 +48,14 @@ export default (opts) => {
         lastColumn = lastColumn ? Math.max(coords.x, lastColumn) : coords.x
       }
     }
+    const complexity = path.commands.length
     const width = Math.abs(lastRow - firstRow)
     const height = Math.abs(lastColumn - firstColumn)
     const box = width * height
     const contrast = area / box
 
     return {
-      width, height, area, box, contrast
+      width, height, area, box, contrast, complexity
     }
   }
 
@@ -68,15 +75,18 @@ export default (opts) => {
     const N = measureString(ctx, font, 'N')
     const l = measureString(ctx, font, 'l')
     const i = measureString(ctx, font, 'i')
+    const s = measureString(ctx, font, 's')
+    const g = measureString(ctx, font, 'g')
 
     const xHeight = x.height / A.height
     const contrast = O.contrast
     const widthRatio = u.mean([M.width / M.height, N.width / N.height])
     const widthVariance = Math.abs(u.mean([l.width, i.width]) - u.mean([A.width, M.width, O.width]))
+    const complexity = u.mean([A.complexity, s.complexity, i.complexity, g.complexity, O.complexity])
 
     return {
       name, fontUrl,
-      xHeight, contrast, widthRatio, widthVariance
+      xHeight, contrast, widthRatio, widthVariance, complexity
     }
   }
 

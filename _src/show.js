@@ -61,6 +61,7 @@ const fontRow = (font) => {
     <tr>
       <td>${showFont(font)}</td>
       <td>${font.xHeight}</td>
+      <td>${font.complexity}</td>
       <td>${font.contrast}</td>
       <td>${font.widthRatio}</td>
       <td>${font.widthVariance}</td>
@@ -73,6 +74,7 @@ const fontTable = (rows) => {
       <tr>
         <th onclick="sort('font')">font</th>
         <th onclick="sort('xHeight')">x height</th>
+        <th onclick="sort('complexity')">complexity</th>
         <th onclick="sort('contrast')">contrast</th>
         <th onclick="sort('widthRatio')">width ratio</th>
         <th onclick="sort('widthVariance')">width variance</th>
